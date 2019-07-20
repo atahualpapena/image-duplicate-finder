@@ -1,27 +1,27 @@
 import os, sys
 import hashlib
  
-def findDup(parentFolder):
+def find_dup(parentFolder):
     dups = {}
     for dirName, subdirs, fileList in os.walk(parentFolder):
         print('Scanning %s...' % dirName)
         for filename in fileList:
             path = os.path.join(dirName, filename)
-            file_hash = hashfile(path)
+            file_hash = hash_file(path)
             if file_hash in dups:
                 dups[file_hash].append(path)
             else:
                 dups[file_hash] = [path]
     return dups
  
-def joinDicts(dict1, dict2):
+def join_dicts(dict1, dict2):
     for key in dict2.keys():
         if key in dict1:
             dict1[key] = dict1[key] + dict2[key]
         else:
             dict1[key] = dict2[key]
  
-def hashfile(path, blocksize = 65536):
+def hash_file(path, blocksize = 65536):
     afile = open(path, 'rb')
     hasher = hashlib.md5()
     buf = afile.read(blocksize)
@@ -31,7 +31,7 @@ def hashfile(path, blocksize = 65536):
     afile.close()
     return hasher.hexdigest()
  
-def printResults(dict1):
+def print_results(dict1):
     results = list(filter(lambda x: len(x) > 1, dict1.values()))
     if len(results) > 0:
         print('Duplicates Found:')
@@ -52,10 +52,10 @@ if __name__ == '__main__':
         folders = sys.argv[1:]
         for i in folders:
             if os.path.exists(i):
-                joinDicts(dups, findDup(i))
+                join_dicts(dups, find_dup(i))
             else:
                 print('%s is not a valid path, please verify' % i)
                 sys.exit()
-        printResults(dups)
+        print_results(dups)
     else:
         print('Usage: python3 app.py folder or python3 app.py folder1 folder2 folder3')
